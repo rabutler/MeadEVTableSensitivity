@@ -1,0 +1,28 @@
+---
+title: "Sensitivities of the Gains above Mead natural flow due to the updated Lake Mead elevation-volume and elevation-area tables."
+author: "Alan Butler"
+date: "Monday, December 29, 2014"
+output: html_document
+---
+
+This document aims to summarize the differences in the intervening natural flow above Mead due to updating the Lake Mead elevation-area and elevation-volume tables.
+
+```{r, echo = FALSE}
+# call the main script so all of the results can be accessed in zz
+source('getSensitivityFigures.R')
+zz <- getSensitivityFigures()
+```
+
+## Background
+
+## Problem
+
+## Analysis
+
+## Summary
+
+```{r, echo=FALSE}
+plot(zz[,1],zz[,2],type = 'l')
+```
+
+
