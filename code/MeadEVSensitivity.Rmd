@@ -1,28 +1,59 @@
 ---
-title: "Sensitivities of the Gains above Mead natural flow due to the updated Lake Mead elevation-volume and elevation-area tables."
+title: Sensitivities of the Gains above Mead natural flow due to the updated Lake
+  Mead elevation-volume and elevation-area tables.
 author: "Alan Butler"
 date: "Monday, December 29, 2014"
-output: html_document
+output: pdf_document
 ---
 
 This document aims to summarize the differences in the intervening natural flow above Mead due to updating the Lake Mead elevation-area and elevation-volume tables.
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, message=FALSE, warning=FALSE}
 # call the main script so all of the results can be accessed in zz
+library(knitr)
 source('getSensitivityFigures.R')
 zz <- getSensitivityFigures()
 ```
 
 ## Background
+The original elevation-volume (EV) and elevation-area (EA) tables were developed using a survey from 1963-64 and documented in a 1967 report. New tables were developed in 2009 using 2001 bathymetry survey and 2009 LiDAR survey ([Tighi and Callejo (2009)](http://www.usbr.gov/lc/region/g4000/LM_AreaCapacityTables2009.pdf)) and were put into use operationally in 2012. The updated EV table showed an increases of 243 KAF of capacity, largely due to "compaction of sediments at the bottom of Lake Mead, combined with a decrease in sediment inflow into Lake Mead since the closer of Glen Canyon Dam in 1963". 
+
+Because the natural flow computations start in 1971 and this is after the closing of Glen Canyon Dam, it was decided that the EV and EA tables should be updated in the Natural Flow and Salt Compuation Model for the entire period, i.e., 1971-present. 
+
+The intervening natural flows for the reach above Lake Mead will change if any modifications are made to the EV or EA tables in the Natural Flow and Salt Computation Model. This document presents the changes to the intervening natural flow above Lake Mead for the 1971-2012 period due to the updated EV and EA tables.
 
 ## Problem
+The 2010 Natural Flow and Salt model was thought to contain the 1963 EV and EA tables; however, the 2010 model contained another EV table. This EV table, defined as the "existing table" throughout this document, does not match the 1963 EV table nor the 2009 EV table. The figure below compares the three EV and EA tables.
+
+```{r,echo=FALSE}
+zz$evPlot
+zz$eaPlot
+```
+
+The "existing" elevation-volume table shows a smaller volume for a given elevation as compared to the 1963 or 2009 table for all elevations. The 2009 table shows a larger volume for a given elevation as compared to the 1963 table at all elevations. For exampe, for an elevation of 1,100\' the different volumes are as follows:
+
+```{r, echo = FALSE, results="asis"}
+# format the data a bit differently and include units
+vv <- zz$eveaData
+vv <- vv[vv$Variable == 'Volume' & vv$Elevation == 1100,]
+vv <- data.frame(Table=vv$Table, Volume=vv$Value)
+names(vv)[2] = 'Volume [MAF]'
+knitr::kable(vv, format = 'pandoc',caption = 'Different volumes for an elevation of 1,100\' based on the different EV tables.')
+```
+
+The existing EA table is essentially the same as the 1963 EA table. The only difference is due to rounding--- the 1963 EA table included precision to the hundredths place whereas the existing table was input into the model rounded to the nearest ones place.
+
+More differences between the 1963 and 2009 tables are explained in [Tighi and Callejo (2009)](http://www.usbr.gov/lc/region/g4000/LM_AreaCapacityTables2009.pdf).
 
 ## Analysis
+To understand how the 2009 EV and EA tables affect the intervening natural flow above Mead, the computed natural flows are compared using the 1971-2012 period for simulations computed using the "existing" EV and EA tables and the 2009 EV and EA tables. The "existing" tables were used instead of the 1963 tables because the 2010 natural flow and salt model contained the "existing" tables. 
+
+Prior to comparing the results using the 2009 tables, a simulation was completed using the "existing" tables. The results for 1971-2010 from this run were compared to the published values from the 2010 model. There were no differences in these values, indicating there were no other changes to the model or input data that had an affect on the results.
+
+### Monthly Differences
+
+### Annual Differences
 
 ## Summary
-
-```{r, echo=FALSE}
-plot(zz[,1],zz[,2],type = 'l')
-```
 
 
