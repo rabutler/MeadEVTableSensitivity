@@ -1,6 +1,6 @@
 ---
-title: Sensitivities of the Gains above Mead natural flow due to the updated Lake
-  Mead elevation-volume and elevation-area tables.
+title: Changes to the intervening natural flow above Mead due to the updated Lake
+  Mead elevation-volume and elevation-area tables
 author: "Alan Butler"
 date: "Monday, December 29, 2014"
 output: pdf_document
@@ -16,7 +16,7 @@ zz <- getSensitivityFigures()
 ```
 
 ## Background
-The original elevation-volume (EV) and elevation-area (EA) tables were developed using a survey from 1963-64 and documented in a 1967 report. New tables were developed in 2009 using 2001 bathymetry survey and 2009 LiDAR survey ([Tighi and Callejo (2009)](http://www.usbr.gov/lc/region/g4000/LM_AreaCapacityTables2009.pdf)) and were put into use operationally in 2012. The updated EV table showed an increases of 243 KAF of capacity, largely due to "compaction of sediments at the bottom of Lake Mead, combined with a decrease in sediment inflow into Lake Mead since the closer of Glen Canyon Dam in 1963". 
+The original elevation-volume (EV) and elevation-area (EA) tables were developed using a survey from 1963-64 and documented in a 1967 report. New tables were developed in 2009 using 2001 bathymetry survey and 2009 LiDAR survey ([Tighi and Callejo, 2009](http://www.usbr.gov/lc/region/g4000/LM_AreaCapacityTables2009.pdf)) and were put into use operationally in 2012. The updated EV table showed an increases of 243 KAF of capacity, largely due to "compaction of sediments at the bottom of Lake Mead, combined with a decrease in sediment inflow into Lake Mead since the closer of Glen Canyon Dam in 1963". 
 
 Because the natural flow computations start in 1971 and this is after the closing of Glen Canyon Dam, it was decided that the EV and EA tables should be updated in the Natural Flow and Salt Compuation Model for the entire period, i.e., 1971-present. 
 
@@ -68,6 +68,26 @@ zz$annNF
 zz$annNFDiff
 ```
 
+### Reasons for the Largest Differences
+
+In the monthly differences in natural flow, the differences appear to be "noise" around 0, until several cases in the 2003-2012 time range that are abnormally large. Because the larger differences only appear in the later period, this seemed suspect so these differences were investigated further.
+
+The differences are due to "step changes" in the difference between the 2009 EV table and the "existing" EV table. The figure below shows the difference between the two tables. The largest differences in the natural flows occur when the elevation crosses one of the step changes from one month to the next. For example, the largest difference in natural flow occurs in January 2011. In December 2010, the elevation is marked by the red line. In January 2011, the elevation is marked by the blue line. The larger difference in natural flow is due to crossing the step change of storage differences from one month to the next.
+
+```{r, echo=FALSE}
+zz$volDiffPlot
+```
+
+The reason for the step changes in the differences between the storage from the 2009 EV table and the "existing" EV table is due to some unexplained drops in the storage in the "existing" EV table. The figure below shows the EV curves for a narrow elevation band. The "existing" EV curve decreases in storage from elevation 920' to 920.5' and again from 940' to 940.5'. The reasoning for this is unknown. The 1963 table does not have these jumps, so the changes in the invervening natural flow when using the 1963 EV table as compared to the 2009 EV table would not include the large changes depcited in the differences between the 2009 and "existing" tables.
+
+```{r, echo=FALSE}
+zz$evPlotZoom
+```
+
 ## Summary
 
+The "existing" EV table, i.e., the EV table included in the 2010 natural flow and salt computation model, does not match the 2009 nor the 1963 EV table. It is unclear where this "existing" table originated and it includes some weird changes in storage, i.e., decrease in storage for an increase in elevation, from one elevation to the next that are unexplainable. 
 
+Because of the oddities in the "existing" EV table, there are some larger differences in the intervening natural flow above Mead when computed using the 2009 EV table as compared to using the "existing" EV table. The differences can be large in a given year or month, the average difference from 1971-2012 in nearly 0. While some differences in the natural flows are an artifact of updating the EV table, it is important to represent the EV table as accurately as possible.
+
+For the 2012 natural flow and salt model, the 2009 EV and EA tables will be used, and as such there will be changes in the 1971-2010 intervening natural flow above Mead as compared to the data published in 2013.
