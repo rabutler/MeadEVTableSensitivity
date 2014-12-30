@@ -52,7 +52,21 @@ Prior to comparing the results using the 2009 tables, a simulation was completed
 
 ### Monthly Differences
 
+The figures below show the monthly natural flow for both sets of EV and EA tables and the monthly difference between using the two different tables. The differences range by about +/- 50 KAF in  month, but the average over time is nearly 0 acre-ft.
+
+```{r, echo=FALSE}
+zz$monNF
+zz$monNFDiff
+```
+
 ### Annual Differences
+
+The figures below show the annual intervening natural flow above Mead and the difference in the computed natural flow when using the two different EV and EA tables. At the annual scale, the differences in using the two different tables is again about +/- 50 KAF. This corresponds to roughly a maximum of 75% different. However, the aeverage difference through time is `r round(zz$annNFDiffMeansData[1,2],0)` acre-ft, or `r round(zz$annNFDiffMeansData[2,2],2)`%.
+
+```{r, echo=FALSE}
+zz$annNF
+zz$annNFDiff
+```
 
 ## Summary
 
