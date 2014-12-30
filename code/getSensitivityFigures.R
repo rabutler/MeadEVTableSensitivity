@@ -48,7 +48,7 @@ getSensitivityFigures <- function()
   evea <- rbind(oldEV, newEV, exEV, oldEA, newEA, exEA)
   
   # remove the 'fake' elevation entries
-  evea <- evea[evea$Elevation < 1235,]
+  evea <- evea[evea$Elevation <= 1235,]
   # convert volume to MAF
   evea$Value[evea$Variable == 'Volume'] <- evea$Value[evea$Variable == 'Volume']/1000000
   
@@ -56,6 +56,10 @@ getSensitivityFigures <- function()
   evPlot <- ggplot(evea[evea$Variable == 'Volume',],aes(Elevation,Value,color = Table))
   evPlot <- evPlot + geom_line(size=1) + labs(list(title = 'Lake Mead Elevation-Volume Curves', 
                                               y = 'Volume [MAF]', x = 'Elevation [ft]'))
+  
+  evPlotZoom <- ggplot(evea[evea$Variable == 'Volume' & evea$Elevation <= 950,],aes(Elevation,Value,color = Table))
+  evPlotZoom <- evPlotZoom + geom_line(size=1) + labs(list(title = 'Lake Mead Elevation-Volume Curves', 
+                                                   y = 'Volume [MAF]', x = 'Elevation [ft]'))
   
   eaPlot <- ggplot(evea[evea$Variable == 'Area',],aes(Elevation,Value,color = Table))
   eaPlot <- eaPlot + geom_line(size=1) + labs(list(title = 'Lake Mead Elevation-Area Curves', 
@@ -94,9 +98,19 @@ getSensitivityFigures <- function()
                          y = '')) +  scale_y_continuous(labels = comma) +
                geom_hline(data = annNFDiffMeans, mapping=aes(yintercept=val), col = 'red')
   
-  # ***************
-  # need to start here, and add in a horizontal line for the average that varies by facet.
-  # ***************
+  # plot the differences between the 2009 and existing EV tables
+  evea <- evea[evea$Elevation <= 1229,]
+  volDiff <- data.frame(VolDiff = evea$Value[evea$Table == '2009' & evea$Variable == 'Volume'] - 
+                              evea$Value[evea$Table == 'Existing' & evea$Variable == 'Volume'], 
+                        Elevation = evea$Elevation[evea$Table == '2009' & evea$Variable == 'Volume'])
+  volDiff$VolDiff <- volDiff$VolDiff
+  volDiff$Dec2010 <- 1086.3
+  volDiff$Jan2011 <- 1091.73
+  volDiffPlot <- ggplot(volDiff, aes(Elevation, VolDiff)) + geom_point() + 
+                 geom_vline(aes(xintercept=Dec2010), col = 'red') + 
+                 geom_vline(aes(xintercept=Jan2011), col = 'blue') + 
+                 labs(list(title = 'Storage from 2009 EV table minus storage from \"existing\" EV table',
+                           y = 'Difference in storage [MAF]'), x = 'Elevation [ft]')
   
   # create output list for use in RMarkdown file
   otpt <- list()
@@ -108,5 +122,7 @@ getSensitivityFigures <- function()
   otpt$annNF <- annNF
   otpt$annNFDiff <- annNFDiff
   otpt$annNFDiffMeansData <- annNFDiffMeans
+  otpt$volDiffPlot <- volDiffPlot
+  otpt$evPlotZoom <- evPlotZoom
   otpt
 }
