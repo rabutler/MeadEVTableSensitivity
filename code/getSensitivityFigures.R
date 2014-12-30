@@ -3,7 +3,7 @@ library(ggplot2)
 library(scales)
 library(zoo)
 library(RWDataPlot)
-
+library(plyr)
 
 # creates all the figures necessary to look at the changes in the natural flow due to changes
 # in the Mead elevation-volume and elevation-area tables
@@ -65,12 +65,12 @@ getSensitivityFigures <- function()
   # compare the existing tables to the 2009 tables: MONTHLY
   monDiff <- data.frame(Time = tt,
     NatFlow = simRes$NatFlow[simRes$Table == '2009'] - simRes$NatFlow[simRes$Table == 'Existing'])
-  
+
   monNFDiff <- ggplot(monDiff, aes(Time, NatFlow))
   monNFDiff <- monNFDiff + geom_line() + scale_x_yearmon() + ylab('Difference [acre-ft]') + 
       ggtitle('Difference in monthly intervening natural flow above Mead\nResults from 2009 tables minus results from "existing" tables') + 
-      geom_hline(aes(yintercept=mean(monDiff$NatFlow),color = 'red')) + scale_y_continuous(labels = comma)
-  monNFDiff
+      geom_hline(data = monDiff, aes(yintercept=mean(NatFlow),color = 'red')) + scale_y_continuous(labels = comma)
+  
   
   monNF <- ggplot(simRes, aes(Time, NatFlow, color = Table)) + geom_line() + scale_x_yearmon() +
            labs(list(title = 'Monthly Intervening Natural Flow above Mead', 
@@ -87,10 +87,12 @@ getSensitivityFigures <- function()
   annDiff <- rbind(annDiff, data.frame(Year = 1971:2012, 
                                        NFDiff = annDiff$NFDiff/simResAnn$NatFlow[simResAnn$Table == '2009']*100,
                                        Variable = 'Annual Percent Diff. [%]'))
+  annNFDiffMeans <- plyr::ddply(annDiff, .(Variable), summarize,val = mean(NFDiff))
   annNFDiff <- ggplot(annDiff,aes(Year,NFDiff)) + geom_line() + 
                facet_grid(Variable~., scales = 'free') +
                labs(list(title = 'Difference in annual intervening natural flow above Mead\nResults from 2009 tables minus results from "existing" tables',
-                         y = '')) +  scale_y_continuous(labels = comma)
+                         y = '')) +  scale_y_continuous(labels = comma) +
+               geom_hline(data = annNFDiffMeans, mapping=aes(yintercept=val), col = 'red')
   
   # ***************
   # need to start here, and add in a horizontal line for the average that varies by facet.
@@ -104,5 +106,7 @@ getSensitivityFigures <- function()
   otpt$monNFDiff <- monNFDiff
   otpt$monNF <- monNF
   otpt$annNF <- annNF
+  otpt$annNFDiff <- annNFDiff
+  otpt$annNFDiffMeansData <- annNFDiffMeans
   otpt
 }
