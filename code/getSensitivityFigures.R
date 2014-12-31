@@ -87,16 +87,17 @@ getSensitivityFigures <- function()
                      y = 'Natural Flow [acre-ft]', x = 'Year')) +
            scale_y_continuous(labels = comma)
   annDiff <- data.frame(Year = 1971:2012, NFDiff = simResAnn$NatFlow[simResAnn$Table == '2009'] -
-                          simResAnn$NatFlow[simResAnn$Table == 'Existing'], Variable = 'Annual Difference [acre-ft]')
+                          simResAnn$NatFlow[simResAnn$Table == 'Existing'], Variable = 'Annual Difference\n[acre-ft]')
   annDiff <- rbind(annDiff, data.frame(Year = 1971:2012, 
                                        NFDiff = annDiff$NFDiff/simResAnn$NatFlow[simResAnn$Table == '2009']*100,
-                                       Variable = 'Annual Percent Diff. [%]'))
+                                       Variable = 'Annual Percent\nDiff. [%]'))
   annNFDiffMeans <- plyr::ddply(annDiff, .(Variable), summarize,val = mean(NFDiff))
   annNFDiff <- ggplot(annDiff,aes(Year,NFDiff)) + geom_line() + 
                facet_grid(Variable~., scales = 'free') +
                labs(list(title = 'Difference in annual intervening natural flow above Mead\nResults from 2009 tables minus results from "existing" tables',
                          y = '')) +  scale_y_continuous(labels = comma) +
-               geom_hline(data = annNFDiffMeans, mapping=aes(yintercept=val), col = 'red')
+               geom_hline(data = annNFDiffMeans, mapping=aes(yintercept=val), col = 'red') +
+               theme(strip.text.x = element_text(size = 8))
   
   # plot the differences between the 2009 and existing EV tables
   evea <- evea[evea$Elevation <= 1229,]
